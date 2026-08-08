@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NEXUS CECT • Hood Boss QA Orientation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ng: #00ff87;
+    --nc: #60efff;
+    --np: #ff0080;
+    --ny: #ffcc00;
+    --bg: #0a0a0f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: #e2e8f0;
+    margin: 0;
+    overflow: hidden;
+    height: 100dvh;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .neon-g { color: var(--ng); text-shadow: 0 0 12px rgba(0,255,135,0.5); }
+  .neon-c { color: var(--nc); text-shadow: 0 0 12px rgba(96,239,255,0.45); }
+  .neon-p { color: var(--np); text-shadow: 0 0 12px rgba(255,0,128,0.45); }
+  .neon-y { color: var(--ny); text-shadow: 0 0 10px rgba(255,204,0,0.4); }
+  .glass {
+    background: rgba(12, 14, 22, 0.82);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 135, 0.18);
+  }
+  .glass-strong {
+    background: rgba(8, 10, 18, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 135, 0.25);
+  }
+  .panel-glow {
+    box-shadow: 0 0 40px rgba(0, 255, 135, 0.06), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .nav-item {
+    transition: all 0.18s ease;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: rgba(0,255,135,0.06); }
+  .nav-item.active {
+    background: rgba(0,255,135,0.12);
+    border-left-color: var(--ng);
+  }
+  .nav-item.done { opacity: 0.85; }
+  .btn-primary {
+    background: var(--ng);
+    color: #000;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(96,239,255,0.35);
+    color: var(--nc);
+    transition: all 0.15s ease;
+  }
+  .btn-ghost:hover { background: rgba(96,239,255,0.1); }
+  .checklist-item {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .checklist-item.checked {
+    opacity: 0.7;
+  }
+  .checklist-item.checked .check-box {
+    background: var(--ng);
+    border-color: var(--ng);
+  }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(0,255,135,0.5);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .progress-bar {
+    height: 3px;
+    background: rgba(0,255,135,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ng), var(--nc));
+    transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 12px var(--ng);
+  }
+  .slide-content h2 { letter-spacing: -0.02em; }
+  .slide-content ul { list-style: none; padding: 0; }
+  .slide-content li { position: relative; padding-left: 1.4rem; margin-bottom: 0.55rem; }
+  .slide-content li::before {
+    content: '';
+    position: absolute; left: 0; top: 0.55em;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--nc);
+    box-shadow: 0 0 8px var(--nc);
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .tag-blue { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.4); }
+  .tag-green { background: rgba(0,255,135,0.15); color: var(--ng); border: 1px solid rgba(0,255,135,0.35); }
+  .tag-red { background: rgba(255,0,128,0.15); color: var(--np); border: 1px solid rgba(255,0,128,0.35); }
+  .tag-yellow { background: rgba(255,204,0,0.12); color: var(--ny); border: 1px solid rgba(255,204,0,0.3); }
+  #visualizer { image-rendering: auto; }
+  .modal-backdrop {
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 5px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(0,255,135,0.25); border-radius: 3px; }
+  @media (max-width: 1024px) {
+    .right-panel { display: none; }
+    .sidebar { width: 260px !important; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { position: fixed; left: -100%; z-index: 40; height: 100%; transition: left 0.25s ease; }
+    .sidebar.open { left: 0; }
+    .mobile-overlay { display: none; }
+    .mobile-overlay.show { display: block; }
+  }
+</style>
+</head>
+<body>
+<div class="flex h-full">
+  <!-- Mobile Overlay -->
+  <div id="mobileOverlay" class="mobile-overlay fixed inset-0 bg-black/60 z-30" onclick="toggleSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar w-72 glass-strong flex flex-col panel-glow border-r border-[rgba(0,255,135,0.15)] z-40">
+    <div class="p-5 border-b border-[rgba(0,255,135,0.12)]">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-[rgba(0,255,135,0.15)] border border-[rgba(0,255,135,0.4)] flex items-center justify-center">
+          <span class="neon-g font-bold text-lg mono">N</span>
+        </div>
+        <div>
+          <div class="neon-g font-semibold tracking-wide text-sm">NEXUS CECT</div>
+          <div class="text-[10px] text-slate-400 mono">HOOD BOSS QA • v3.2</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto scrollbar-thin py-3 px-2" id="navList"></div>
+
+    <div class="p-4 border-t border-[rgba(0,255,135,0.12)]">
+      <div class="flex items-center justify-between text-[11px] mb-2">
+        <span class="text-slate-400">PROGRESS</span>
+        <span id="progressText" class="neon-g mono">0/15</span>
+      </div>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="mt-3 text-[10px] text-slate-500 mono text-center">
+        AntManThePro • Field Ops
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Header -->
+    <header class="h-14 glass flex items-center px-4 md:px-6 justify-between border-b border-[rgba(0,255,135,0.12)]">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="md:hidden p-2 text-slate-400 hover:text-[var(--ng)]">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h14M3 12h14M3 18h14"/></svg>
+        </button>
+        <button onclick="prevSlide()" class="btn-ghost px-3 py-1.5 rounded text-xs flex items-center gap-1.5">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          BACK
+        </button>
+        <div id="slideTitle" class="font-semibold text-sm md:text-base neon-p truncate max-w-[180px] md:max-w-none"></div>
+      </div>
+      <div class="flex items-center gap-3 md:gap-5">
+        <button onclick="toggleTimer()" id="timerBtn" class="flex items-center gap-2 text-xs mono text-slate-400 hover:text-[var(--nc)] transition-colors">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3.5l2 1.5"/></svg>
+          <span id="timerDisplay">00:00</span>
+        </button>
+        <button onclick="nextSlide()" class="btn-primary px-4 py-1.5 rounded text-xs flex items-center gap-1.5">
+          NEXT
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto scrollbar-thin relative">
+      <div id="slideContent" class="slide-content max-w-3xl mx-auto p-6 md:p-10"></div>
+    </main>
+
+    <!-- Footer Controls -->
+    <footer class="h-16 glass flex items-center px-4 md:px-6 justify-between border-t border-[rgba(0,255,135,0.12)] text-xs">
+      <div class="flex gap-4 md:gap-6">
+        <button onclick="markComplete()" class="flex items-center gap-2 text-slate-400 hover:text-[var(--ng)] transition-colors">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+          MARK COMPLETE
+        </button>
+        <button onclick="openQuiz()" class="flex items-center gap-2 text-slate-400 hover:text-[var(--np)] transition-colors">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5.5"/><path d="M7 5.5v2.5M7 10h.01"/></svg>
+          QUICK QUIZ
+        </button>
+      </div>
+      <div class="hidden sm:block text-[10px] text-slate-500 mono text-right leading-tight">
+        DOUBLEA • ANTMANTHEPRO<br>
+        <span class="text-slate-600">PORTFOLIO ARTIFACT</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- RIGHT VISUALIZER -->
+  <aside class="right-panel w-80 glass-strong border-l border-[rgba(0,255,135,0.15)] flex flex-col panel-glow">
+    <div class="p-4 border-b border-[rgba(0,255,135,0.12)]">
+      <div class="text-xs neon-g mono tracking-widest">PROTOCOL VISUALIZER</div>
+    </div>
+    <div class="flex-1 flex flex-col items-center justify-center p-4">
+      <canvas id="visualizer" width="280" height="320" class="rounded-lg border border-[rgba(96,239,255,0.2)]"></canvas>
+      <div id="vizLegend" class="mt-5 w-full space-y-2 text-[11px]"></div>
+    </div>
+    <div class="p-4 border-t border-[rgba(0,255,135,0.12)] text-[10px] text-slate-500 mono text-center">
+      Real-time state • Canvas driven
+    </div>
+  </aside>
+</div>
+
+<!-- QUIZ MODAL -->
+<div id="quizModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+  <div class="glass-strong max-w-md w-full rounded-xl p-6 panel-glow border border-[rgba(255,0,128,0.3)]">
+    <div id="quizBody"></div>
+  </div>
+</div>
+
+<script>
+const slides = [
+  {
+    id: 1,
+    title: "Title Slide",
+    stage: "intro",
+    html: `
+      <div class="text-center pt-8">
+        <div class="inline-flex items-center gap-2 tag tag-green mb-6">NEW-HIRE ORIENTATION</div>
+        <h1 class="text-3xl md:text-4xl font-bold neon-g leading-tight mb-4">CECT Documentation<br>& Photo Standards</h1>
+        <p class="text-lg neon-c mb-8">15-Slide New-Hire Orientation Deck</p>
+        <div class="glass rounded-xl p-6 max-w-md mx-auto text-left space-y-3">
+          <div class="text-sm text-slate-300">CECT Field-Tech Documentation & Photo Standards</div>
+          <div class="text-sm"><span class="neon-p">Hood Boss QA Program</span></div>
+          <div class="text-xs text-slate-400 mono">Based on IKECA CECT Handbook v3.2.0 & MyTechPix Portal Workflow</div>
+        </div>
+        <p class="mt-10 text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+          Welcome. This deck covers the non-negotiable documentation standards that protect you, the company, and the client. <span class="neon-y">Every photo you take is a legal record.</span>
+        </p>
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Why This Matters",
+    stage: "intro",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Why This Matters</h2>
+      <ul class="space-y-4 text-[15px] leading-relaxed">
+        <li><strong class="neon-c">Certification requirement</strong> — CECT renewal depends on documented compliance with IKECA / ANSI / NFPA 96</li>
+        <li><strong class="neon-c">Liability shield</strong> — Photos = evidence in fire investigations, insurance claims, OSHA inspections</li>
+        <li><strong class="neon-c">Client trust</strong> — Before/after proof = faster payment, fewer callbacks</li>
+        <li><strong class="neon-c">30-day reporting rule</strong> — Any eligibility/status change → report to IKECA within 30 days</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ny)]">
+        <p class="text-sm text-slate-300"><span class="neon-y font-semibold">Speaker Notes:</span> This isn’t paperwork — it’s your certification insurance. One missed photo can void a job or trigger an audit.</p>
+      </div>`
+  },
+  {
+    id: 3,
+    title: "The Portal Ecosystem",
+    stage: "portal",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">The Portal Ecosystem</h2>
+      <ul class="space-y-3 text-[15px]">
+        <li><strong class="neon-c">MyTechPix / Hood Boss Jobs Portal</strong> — <span class="mono text-xs text-slate-400">app.mytechpix.com/kec/hood-boss/jobs</span></li>
+        <li><strong class="neon-c">Job rows</strong> — KEC-labeled, sorted by date, click date column to enter</li>
+        <li><strong class="neon-c">Color outlines</strong> —
+          <span class="tag tag-blue ml-1">Blue</span> before/start &nbsp;
+          <span class="tag tag-green">Green</span> after/complete &nbsp;
+          <span class="tag tag-red">Red</span> deficiency
+        </li>
+        <li><strong class="neon-c">Publish gate</strong> — Only unlocks when: Blue ✓ · Green ✓ · Red✗ · Intervals ✓</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--nc)]">
+        <p class="text-sm"><span class="neon-c font-semibold">Speaker Notes:</span> You’ll live in this portal. Learn the color code: Blue = we started, Green = we finished clean, Red = problem found.</p>
+      </div>`
+  },
+  {
+    id: 4,
+    title: "Before-Work Protocol — Blue Set",
+    stage: "blue",
+    html: `
+      <h2 class="text-2xl font-bold mb-2">Before-Work Protocol</h2>
+      <div class="tag tag-blue mb-6">THE BLUE SET</div>
+      <p class="text-sm text-slate-400 mb-5">Minimum required before shots (every job):</p>
+      <div class="space-y-2" id="blueChecklist">
+        ${["Hood interior — all banks, filters in place","Duct access panels — open, grease depth visible","Fan housing & wheel","Fire-suppression links/tags (legible)","Grease-depth gauge or reference object in frame","Kitchen overview — “as found” condition"].map((t,i)=>`
+          <div class="checklist-item glass rounded-lg px-4 py-3 flex items-center gap-3" onclick="toggleCheck(this)">
+            <div class="check-box"><svg class="hidden w-3 h-3 text-black" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+            <span class="text-sm">${i+1}. ${t}</span>
+          </div>`).join('')}
+      </div>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--nc)]">
+        <p class="text-sm"><span class="neon-c font-semibold">Speaker Notes:</span> First shot starts the clock. If it’s not blue-outlined, the job hasn’t officially begun. No exceptions.</p>
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Timestamp & Metadata Discipline",
+    stage: "blue",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Timestamp & Metadata Discipline</h2>
+      <ul class="space-y-3 text-[15px]">
+        <li><strong class="neon-c">Device clock</strong> — Sync to NTP daily (Settings → Date/Time → Set Automatically)</li>
+        <li><strong class="neon-c">Filename convention</strong> — <span class="mono text-xs">IMG_YYYYMMDD_HHMMSS</span> (portal assigns if missing)</li>
+        <li><strong class="neon-c">GPS / Location</strong> — Must be ON; embeds in EXIF</li>
+        <li><strong class="neon-c">Job ID</strong> — Every file auto-tagged; verify in portal before moving on</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ny)]">
+        <p class="text-sm"><span class="neon-y font-semibold">Speaker Notes:</span> Bad timestamps = flagged intervals. Sync your phone every morning. It takes 10 seconds.</p>
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Narrative Tags — Context in Seconds",
+    stage: "blue",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Narrative Tags — Context in Seconds</h2>
+      <p class="text-sm text-slate-400 mb-5">Required per component (voice or text):</p>
+      <div class="space-y-3">
+        <div class="glass rounded-lg p-4">
+          <div class="text-xs neon-c mono mb-1">LOCATION</div>
+          <div class="text-sm">“Hood left bank / Duct run 3 / Fan housing”</div>
+        </div>
+        <div class="glass rounded-lg p-4">
+          <div class="text-xs neon-c mono mb-1">CONDITION</div>
+          <div class="text-sm">“3/8″ grease / Filter missing / Damaged access panel”</div>
+        </div>
+        <div class="glass rounded-lg p-4">
+          <div class="text-xs neon-c mono mb-1">ACTION NEEDED</div>
+          <div class="text-sm">“Scrape + wash / Replace filter / Repair panel”</div>
+        </div>
+      </div>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--nc)]">
+        <p class="text-sm"><span class="neon-c font-semibold">Speaker Notes:</span> Future you (or an investigator) needs to know what you saw <em>in the moment</em>. Don’t make them guess.</p>
+      </div>`
+  },
+  {
+    id: 7,
+    title: "During-Work — Interval Rules",
+    stage: "during",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">During-Work — Interval Rules</h2>
+      <ul class="space-y-3 text-[15px]">
+        <li><strong class="neon-c">Max gap ≤ 45 minutes</strong> between uploads (configurable; default 30 min)</li>
+        <li><strong class="neon-c">Long-interval flag</strong> — Auto-triggers in portal, appears in QA report</li>
+        <li><strong class="neon-c">Deficiency capture</strong> — See it → Shoot it → Red outline auto-triggers → Alert fires</li>
+        <li><strong class="neon-c">Process proof</strong> — One photo per major step: scrape, wash, rinse, chemical dwell, scrape-test</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ny)]">
+        <p class="text-sm"><span class="neon-y font-semibold">Speaker Notes:</span> The 45-minute rule exists so we can learn true job durations. Gaps look like missing work.</p>
+      </div>`
+  },
+  {
+    id: 8,
+    title: "Red-Outline Protocol — Deficiencies",
+    stage: "red",
+    html: `
+      <h2 class="text-2xl font-bold mb-2">Red-Outline Protocol</h2>
+      <div class="tag tag-red mb-6">DEFICIENCIES</div>
+      <p class="text-sm text-slate-400 mb-4">When you see a defect, immediately:</p>
+      <ol class="space-y-3 text-[15px] list-decimal list-inside">
+        <li>Photograph / video the issue clearly (wide → close-up)</li>
+        <li>Ensure red outline appears in portal</li>
+        <li>Add narrative: “Duct run 2 — 6″ crushed section, 12 ft from hood”</li>
+        <li>Alert auto-sends to QA manager with attached image</li>
+        <li>Document resolution (repair photo) before green set</li>
+      </ol>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--np)]">
+        <p class="text-sm"><span class="neon-p font-semibold">Speaker Notes:</span> Red isn’t failure — it’s documentation. Hidden deficiencies cause fires. Visible ones get fixed.</p>
+      </div>`
+  },
+  {
+    id: 9,
+    title: "After-Work Protocol — Green Set",
+    stage: "green",
+    html: `
+      <h2 class="text-2xl font-bold mb-2">After-Work Protocol</h2>
+      <div class="tag tag-green mb-6">THE GREEN SET</div>
+      <p class="text-sm text-slate-400 mb-4">Mirror the Blue Set exactly:</p>
+      <ul class="space-y-2 text-[15px]">
+        <li>Same angles, same lighting, same components</li>
+        <li>Hood banks clean, filters seated</li>
+        <li>Duct runs bare-metal, panels sealed & labeled</li>
+        <li>Fan wheel clean, housing wiped</li>
+        <li>Suppression links reconnected, tags signed</li>
+        <li>Scrape-test photo with gauge/coin reference</li>
+        <li>Kitchen overview — no tools, no debris, floor clean</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ng)]">
+        <p class="text-sm"><span class="neon-g font-semibold">Speaker Notes:</span> Side-by-side comparison must be undeniable. If the before had a gauge, the after needs the same gauge.</p>
+      </div>`
+  },
+  {
+    id: 10,
+    title: "The Publish Gate — Final Checklist",
+    stage: "publish",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">The Publish Gate — Final Checklist</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-slate-400 border-b border-[rgba(0,255,135,0.2)]">
+              <th class="py-2 pr-4">Gate</th>
+              <th class="py-2">Verify</th>
+            </tr>
+          </thead>
+          <tbody class="text-[14px]">
+            <tr class="border-b border-white/5"><td class="py-3 pr-4 neon-c">Blue set complete</td><td>All 6+ required before shots present</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-4 neon-c">Green set mirrors blue</td><td>Identical angles / components</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-4 neon-c">Zero red deficiencies</td><td>All flagged items resolved & re-shot</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-4 neon-c">Intervals clean</td><td>No gaps > 45 min</td></tr>
+            <tr><td class="py-3 pr-4 neon-c">Metadata intact</td><td>Job ID, timestamp, GPS on every file</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-6 glass rounded-lg p-4 text-center">
+        <p class="text-sm neon-y">Only then — Hit <strong>PUBLISH</strong>. Log job ID, date, duration in session sheet.</p>
+      </div>
+      <div class="mt-4 glass rounded-lg p-5 border-l-4 border-[var(--ng)]">
+        <p class="text-sm"><span class="neon-g font-semibold">Speaker Notes:</span> Publish is your signature. Don’t hit it until every gate passes. Once published, it’s the permanent record.</p>
+      </div>`
+  },
+  {
+    id: 11,
+    title: "Common Failure Modes",
+    stage: "failure",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Common Failure Modes<br><span class="text-base text-slate-400 font-normal">(What Gets You Flagged)</span></h2>
+      <ul class="space-y-3 text-[15px]">
+        <li class="flex gap-3"><span class="neon-p font-bold">✕</span> Re-staging “after” photos after leaving site</li>
+        <li class="flex gap-3"><span class="neon-p font-bold">✕</span> Cropping out deficiencies</li>
+        <li class="flex gap-3"><span class="neon-p font-bold">✕</span> Missing first/last shot (breaks blue/green pair)</li>
+        <li class="flex gap-3"><span class="neon-p font-bold">✕</span> Uploading from camera roll out of sequence</li>
+        <li class="flex gap-3"><span class="neon-p font-bold">✕</span> Posting job photos on social media (IKECA Policy §7 violation)</li>
+        <li class="flex gap-3"><span class="neon-p font-bold">✕</span> Device clock drift > 2 min from NTP</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--np)]">
+        <p class="text-sm"><span class="neon-p font-semibold">Speaker Notes:</span> Every one of these has happened. Each caused a job hold, a retake, or a disciplinary review. Don’t add to the list.</p>
+      </div>`
+  },
+  {
+    id: 12,
+    title: "Quality Self-Audit",
+    stage: "audit",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Quality Self-Audit<br><span class="text-base text-slate-400 font-normal">(Before You Hit Publish)</span></h2>
+      <p class="text-sm text-slate-400 mb-4">30-second mental checklist:</p>
+      <div class="space-y-2">
+        ${[
+          "Did I capture the first shot before touching anything? (Blue ✓)",
+          "Are there gaps > 45 min in my upload timeline?",
+          "Did I photograph every red flag and its resolution?",
+          "Does the after set mirror the before set angle-for-angle?",
+          "Is the kitchen cleaner than when I arrived?"
+        ].map((t,i)=>`
+          <div class="checklist-item glass rounded-lg px-4 py-3 flex items-center gap-3" onclick="toggleCheck(this)">
+            <div class="check-box"><svg class="hidden w-3 h-3 text-black" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+            <span class="text-sm">${i+1}. ${t}</span>
+          </div>`).join('')}
+      </div>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ng)]">
+        <p class="text-sm"><span class="neon-g font-semibold">Speaker Notes:</span> Build this habit. It takes 30 seconds and saves hours of rework.</p>
+      </div>`
+  },
+  {
+    id: 13,
+    title: "Session Logging & QA Review",
+    stage: "ops",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Session Logging & QA Review</h2>
+      <ul class="space-y-3 text-[15px]">
+        <li><strong class="neon-c">Midpoint summary</strong> — Every 4 hrs: jobs processed, reds found, long intervals, avg duration</li>
+        <li><strong class="neon-c">Auto-generated CSV</strong> — Script exports: Job ID, Start/End, Duration, Deficiencies, Interval Flags</li>
+        <li><strong class="neon-c">Manager review</strong> — Weekly: trends, median durations per site, recurring deficiencies</li>
+        <li><strong class="neon-c">Your feedback loop</strong> — Flag unclear standards → suggest template updates</li>
+      </ul>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--nc)]">
+        <p class="text-sm"><span class="neon-c font-semibold">Speaker Notes:</span> Data from your photos drives scheduling, bidding, and training. Accuracy compounds.</p>
+      </div>`
+  },
+  {
+    id: 14,
+    title: "Continuing Education — Level Up",
+    stage: "ops",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Continuing Education — Level Up</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-slate-400 border-b border-[rgba(0,255,135,0.2)]">
+              <th class="py-2 pr-4">Activity</th>
+              <th class="py-2">CEU Credit</th>
+            </tr>
+          </thead>
+          <tbody class="text-[14px]">
+            <tr class="border-b border-white/5"><td class="py-3 pr-4">In-house training (ladder safety, PPE, NFPA 96)</td><td class="neon-c">0.1 CEU/hr (max 25% per cycle)</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-4">Present photo-standard refresher to crew</td><td class="neon-c">0.5 CEU</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-4">Publish case study in IKECA Journal</td><td class="neon-c">0.3 CEU</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-4">NFPA / ASHRAE committee work</td><td class="neon-c">1.0 CEU/day</td></tr>
+            <tr><td class="py-3 pr-4">IKECA Annual Meeting / Fall Seminar</td><td class="neon-c">Up to 2.0 CEU</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ng)]">
+        <p class="text-sm"><span class="neon-g font-semibold">Speaker Notes:</span> Your documentation skill is a teachable skill. Share it, earn CEUs, keep your cert current.</p>
+      </div>`
+  },
+  {
+    id: 15,
+    title: "Quick-Reference Card",
+    stage: "ref",
+    html: `
+      <h2 class="text-2xl font-bold neon-p mb-6">Quick-Reference Card<br><span class="text-base text-slate-400 font-normal">(Print for Truck)</span></h2>
+      <div class="glass rounded-xl p-5 mono text-[12px] leading-relaxed border border-[rgba(0,255,135,0.25)] space-y-4">
+        <div>
+          <div class="neon-c font-semibold mb-1">BEFORE (Blue)</div>
+          <div class="text-slate-300">□ First shot = start clock<br>□ Hood, duct, fan, suppression, gauge<br>□ Narrative tag per component</div>
+        </div>
+        <div>
+          <div class="neon-y font-semibold mb-1">DURING</div>
+          <div class="text-slate-300">□ ≤45 min gaps between uploads<br>□ Snap every defect → Red auto-alerts<br>□ Process steps: scrape, wash, rinse, test</div>
+        </div>
+        <div>
+          <div class="neon-g font-semibold mb-1">AFTER (Green)</div>
+          <div class="text-slate-300">□ Mirror before angles exactly<br>□ Scrape test with reference<br>□ Panels sealed, tags signed, kitchen clean</div>
+        </div>
+        <div>
+          <div class="neon-p font-semibold mb-1">PUBLISH</div>
+          <div class="text-slate-300">□ Blue✓ Green✓ Red✗ Intervals✓ → HIT IT</div>
+        </div>
+      </div>
+      <div class="mt-8 glass rounded-lg p-5 border-l-4 border-[var(--ny)]">
+        <p class="text-sm"><span class="neon-y font-semibold">Speaker Notes:</span> Print this. Laminate it. Velcro it to your dash. It’s your pre-flight checklist.</p>
+      </div>`
+  }
+];
+
+let current = 0;
+let completed = new Set();
+let timerOn = false;
+let seconds = 0;
+let timerId = null;
+let animFrame = null;
+
+function renderNav() {
+  const list = document.getElementById('navList');
+  list.innerHTML = slides.map((s, i) => `
+    <div class="nav-item rounded-r-md px-3 py-2.5 cursor-pointer flex items-center justify-between ${i===current?'active':''} ${completed.has(i)?'done':''}"
+         onclick="goTo(${i})">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="text-[10px] mono text-slate-500 w-5">${String(s.id).padStart(2,'0')}</span>
+        <span class="text-[13px] truncate ${i===current?'text-white':'text-slate-300'}">${s.title}</span>
+      </div>
+      ${completed.has(i) ? '<span class="text-[var(--ng)] text-xs">✓</span>' : ''}
+    </div>
+  `).join('');
+}
+
+function renderSlide() {
+  const s = slides[current];
+  document.getElementById('slideTitle').textContent = `${s.id}. ${s.title}`;
+  document.getElementById('slideContent').innerHTML = s.html;
+  const pct = ((current + 1) / slides.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${current+1}/${slides.length}`;
+  renderNav();
+  updateVisualizer();
+}
+
+function goTo(i) {
+  current = i;
+  renderSlide();
+  if (window.innerWidth < 768) toggleSidebar(false);
+}
+
+function nextSlide() {
+  if (current < slides.length - 1) { current++; renderSlide(); }
+}
+function prevSlide() {
+  if (current > 0) { current--; renderSlide(); }
+}
+
+function markComplete() {
+  completed.add(current);
+  renderNav();
+  const btn = event.currentTarget;
+  btn.classList.add('text-[var(--ng)]');
+  setTimeout(() => btn.classList.remove('text-[var(--ng)]'), 800);
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const svg = el.querySelector('svg');
+  if (svg) svg.classList.toggle('hidden');
+}
+
+function toggleTimer() {
+  const btn = document.getElementById('timerBtn');
+  if (timerOn) {
+    clearInterval(timerId);
+    timerOn = false;
+    btn.classList.remove('text-[var(--np)]');
+  } else {
+    timerId = setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds/60)).padStart(2,'0');
+      const s = String(seconds%60).padStart(2,'0');
+      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    }, 1000);
+    timerOn = true;
+    btn.classList.add('text-[var(--np)]');
+  }
+}
+
+function toggleSidebar(force) {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('mobileOverlay');
+  if (force === false) {
+    sb.classList.remove('open');
+    ov.classList.remove('show');
+  } else {
+    sb.classList.toggle('open');
+    ov.classList.toggle('show');
+  }
+}
+
+const quizQuestions = [
+  { q: "What color outline marks a deficiency?", opts: ["Blue", "Green", "Red", "Yellow"], a: 2 },
+  { q: "Max gap allowed between photo uploads?", opts: ["15 min", "30 min", "45 min", "60 min"], a: 2 },
+  { q: "What starts the official job clock?", opts: ["Arriving on site", "First blue-outlined photo", "Logging into portal", "Talking to manager"], a: 1 },
+  { q: "Green set must do what relative to Blue?", opts: ["Be completely different angles", "Mirror angles & components exactly", "Only show clean filters", "Be taken the next day"], a: 1 }
+];
+let quizIdx = 0;
+
+function openQuiz() {
+  quizIdx = Math.floor(Math.random() * quizQuestions.length);
+  showQuizQ();
+  document.getElementById('quizModal').classList.remove('hidden');
+}
+
+function showQuizQ() {
+  const q = quizQuestions[quizIdx];
+  document.getElementById('quizBody').innerHTML = `
+    <div class="flex justify-between items-center mb-5">
+      <span class="text-xs neon-p mono tracking-widest">QUICK QUIZ</span>
+      <button onclick="closeQuiz()" class="text-slate-400 hover:text-white text-lg">×</button>
+    </div>
+    <p class="text-base font-medium mb-6">${q.q}</p>
+    <div class="space-y-2">
+      ${q.opts.map((o,i) => `
+        <button onclick="answerQuiz(${i})" class="w-full text-left glass rounded-lg px-4 py-3 text-sm hover:border-[var(--np)] border border-transparent transition-all">
+          ${o}
+        </button>`).join('')}
+    </div>`;
+}
+
+function answerQuiz(i) {
+  const q = quizQuestions[quizIdx];
+  const correct = i === q.a;
+  document.getElementById('quizBody').innerHTML = `
+    <div class="text-center py-4">
+      <div class="text-4xl mb-3">${correct ? '✓' : '✕'}</div>
+      <p class="text-lg font-semibold ${correct ? 'neon-g' : 'neon-p'} mb-2">${correct ? 'Correct' : 'Not quite'}</p>
+      <p class="text-sm text-slate-400 mb-6">${correct ? 'Solid. Keep that standard.' : 'Review the related slide and try again.'}</p>
+      <button onclick="closeQuiz()" class="btn-primary px-6 py-2 rounded text-sm">CONTINUE</button>
+    </div>`;
+}
+
+function closeQuiz() {
+  document.getElementById('quizModal').classList.add('hidden');
+}
+
+const canvas = document.getElementById('visualizer');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function spawnParticles() {
+  for (let i = 0; i < 18; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.6 + 0.4,
+      a: Math.random() * 0.4 + 0.1
+    });
+  }
+}
+spawnParticles();
+
+function stageColor(stage) {
+  const map = {
+    intro: '#60efff',
+    portal: '#60efff',
+    blue: '#3b82f6',
+    during: '#ffcc00',
+    red: '#ff0080',
+    green: '#00ff87',
+    publish: '#00ff87',
+    failure: '#ff0080',
+    audit: '#ffcc00',
+    ops: '#60efff',
+    ref: '#00ff87'
+  };
+  return map[stage] || '#00ff87';
+}
+
+function updateVisualizer() {
+  const s = slides[current];
+  const col = stageColor(s.stage);
+  document.getElementById('vizLegend').innerHTML = `
+    <div class="flex items-center gap-2">
+      <div class="w-3 h-3 rounded-full" style="background:${col}; box-shadow:0 0 8px ${col}"></div>
+      <span class="text-slate-300 capitalize">${s.stage} stage</span>
+    </div>
+    <div class="text-slate-500 text-[10px] mt-1">Color reflects active protocol state</div>
+  `;
+}
+
+function drawViz() {
+  const w = canvas.width, h = canvas.height;
+  ctx.fillStyle = '#050508';
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = 'rgba(0,255,135,0.04)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 20) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 20) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > w) p.vx *= -1;
+    if (p.y < 0 || p.y > h) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(0,255,135,${p.a})`;
+    ctx.fill();
+  });
+
+  const s = slides[current];
+  const col = stageColor(s.stage);
+
+  ctx.save();
+  ctx.translate(w/2, h/2 - 10);
+
+  ctx.shadowBlur = 24;
+  ctx.shadowColor = col;
+
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-70, -50);
+  ctx.lineTo(-70, 40);
+  ctx.lineTo(70, 40);
+  ctx.lineTo(70, -50);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-80, -50);
+  ctx.lineTo(0, -80);
+  ctx.lineTo(80, -50);
+  ctx.closePath();
+  ctx.stroke();
+
+  ctx.lineWidth = 1.5;
+  for (let i = -1; i <= 1; i++) {
+    ctx.beginPath();
+    ctx.moveTo(-55, -20 + i*18);
+    ctx.lineTo(55, -20 + i*18);
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(-25, 40);
+  ctx.lineTo(-25, 70);
+  ctx.lineTo(25, 70);
+  ctx.lineTo(25, 40);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0, -10, 18, 0, Math.PI*2);
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = col;
+  ctx.shadowBlur = 12;
+  ctx.beginPath();
+  ctx.arc(0, -10, 6, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+
+  ctx.fillStyle = col;
+  ctx.font = '11px JetBrains Mono';
+  ctx.textAlign = 'center';
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = col;
+  ctx.fillText(s.stage.toUpperCase(), w/2, h - 18);
+
+  animFrame = requestAnimationFrame(drawViz);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  if (e.key === 'Escape') closeQuiz();
+});
+
+renderSlide();
+drawViz();
+console.log('%cNEXUS CECT Orientation • AntManThePro', 'color:#00ff87;font-family:monospace;font-size:12px');
+</script>
+</body>
+</html>
